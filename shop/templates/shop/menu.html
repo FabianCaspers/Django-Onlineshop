@@ -1,5 +1,16 @@
-<a href="{% url 'shop' %}">Shop</a>
-<a href="{% url 'warenkorb' %}">Warenkorb</a>
-<a href="{% url 'kasse' %}">Kasse</a>
-
-<hr>
+<nav class="navbar shadow p-3 mb-4" style="background-color: #588157;">
+    <div class="container-fluid">
+      <a class="navbar-brand link-light" href="{% url 'shop' %}">Onlineshop</a>
+        <ul class="navbar-nav">
+            <div class="d-flex">
+          <li class="nav-item">
+            <a class="nav-link link-light p-2" href="#">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link link-light p-2" href="{% url 'warenkorb' %}">Warenkorb</a>
+          </li>
+        </div>
+        </ul>
+      </div>
+    </div>
+  </nav>
