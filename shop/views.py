@@ -1,8 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from . models import *
 from django.http import JsonResponse
 import json
+from django.contrib.auth import authenticate, login, logout
+from . forms import EigeneUserCreationForm
 
 # Create your views here.
 def shop(request):
@@ -57,3 +59,48 @@ def artikelBackend(request):
         bestellteArtikel.delete()
 
     return JsonResponse("Artikel hinzugefügt", safe=False)
+
+
+def loginSeite(request):
+    seite = 'login'
+    if request.method == 'POST':
+        benutzername = request.POST['benutzername']
+        password = request.POST['password']
+        
+        benutzer = authenticate(request, username=benutzername, password=password)
+        
+        if benutzer is not None:
+            login(request, benutzer)
+            return redirect('shop')
+        else:
+            messages.error(request, "Benutzername oder Passwort nicht korrekt.")
+            
+    return render(request, 'shop/login.html', {'seite': seite})
+
+def logoutBenutzer(request):
+    logout(request)
+    return redirect('shop')
+
+def regBenutzer(request):
+    seite = 'reg'
+    form = EigeneUserCreationForm
+    
+    if request.method == 'POST':
+        form = EigeneUserCreationForm(request.POST)
+        if form.is_valid():
+           benutzer =  form.save(commit=False)
+           benutzer.save()
+           
+           kunde = Kunde(name=request.POST['username'], benutzer=benutzer)
+           kunde.save()
+           bestellung = Bestellung(kunde=kunde)
+           bestellung.save()
+           
+           login(request, benutzer)
+           return redirect('shop')
+        else:
+            messages.error(request, "Fehlerhafte Eingabe!")
+    
+    
+    ctx = {'form': form, 'seite': seite}
+    return render(request, 'shop/login.html', ctx)

@@ -4,9 +4,14 @@
       <a class="navbar-brand link-light" href="{% url 'shop' %}"><img src="{% static 'img/logo.png' %}"></a>
         <ul class="navbar-nav">
             <div class="d-flex align-items-center">
-          <li class="nav-item btn btn-light">
-            <a class="nav-link  p-2" href="#">Login</a>
-          </li>
+          {% comment %} <li class="nav-item btn btn-light"> {% endcomment %}
+            {% if request.user.is_authenticated %}
+            <h5 class="text-light m-2">Hallo {{request.user|title}}</h5>
+            <a class="btn btn-light p-2" href="{% url 'logout' %}">Logout</a>
+            {%else %}
+            <a class="btn btn-light p-2" href="{% url 'login' %}">Login</a>
+            {% endif %}
+          {% comment %} </li> {% endcomment %}
           <li class="nav-item">
             <a class="nav-link link-light p-2" href="{% url 'warenkorb' %}"><img src="{% static 'img/floppy.png' %}" alt="">
               {% if menge >= 1 %}
