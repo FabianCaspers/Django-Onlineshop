@@ -17,7 +17,7 @@
                   <p class="card-text">{{artikel.beschreibung}}</p>
                   <div class="d-flex justify-content-between">
                     <h5 class="text-secondary">{{artikel.preis|floatformat:2}}.-</h5>
-                    <a href="#" class="btn btn-outline-danger">Bestellen</a>
+                    <button data-artikel={{artikel.id}} data-action="bestellen" class="btn btn-outline-danger warenkorb-bestellen">Bestellen</button>
                   </div>
                   
                 </div>
