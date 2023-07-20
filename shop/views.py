@@ -38,6 +38,19 @@ def artikelBackend(request):
     daten = json.loads(request.body)
     artikelID = daten['artikelID']
     action = daten['action']
+    kunde = request.user.kunde
+    artikel = Artikel.objects.get(id=artikelID)
+    bestellung, created = Bestellung.objects.get_or_create(kunde=kunde, erledigt=False)
+    bestellteArtikel, created = BestellteArtikel.objects.get_or_create(bestellung=bestellung, artikel=artikel)
     
-    print("ArtikelID", artikelID,  "action", action)
+    if action == 'bestellen':
+        bestellteArtikel.menge = (bestellteArtikel.menge +1)
+    elif action == 'entfernen':
+        bestellteArtikel.menge = (bestellteArtikel.menge -1)
+        
+    bestellteArtikel.save()
+    
+    if bestellteArtikel.menge <= 0:
+        bestellteArtikel.delete()
+
     return JsonResponse("Artikel hinzugefügt", safe=False)
