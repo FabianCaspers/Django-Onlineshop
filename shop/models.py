@@ -32,7 +32,7 @@ class Bestellung(models.Model):
     
 class BestellteArtikel(models.Model):
     artikel = models.ForeignKey(Artikel, on_delete=models.SET_NULL, null=True, blank=True)
-    bestellung = models.ForeignKey(Bestellung, on_delete=models.SET_NULL, null=True, blank=True)
+    bestellung = models.ForeignKey(Bestellung,related_name='bestellteartikel', on_delete=models.SET_NULL, null=True, blank=True)
     menge = models.IntegerField(default=0, null=True, blank=True)
     datum = models.DateTimeField(auto_now_add=True)
     

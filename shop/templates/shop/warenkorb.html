@@ -2,10 +2,12 @@
 {% load static %}
 
 {% block content %}
+{% if artikels %}
     <div class="row mt-4">
         <div class="col-12">
             <div class="shadow p-2 mb-4">
                 <div class="d-flex justify-content-end">
+                    <h3 class="me-auto fw-bold p-2">Warenkorb</h3>
                     <p class="fw-bold p-2">Gesamtpreis: 50.-</p>
                     <p><a class="btn btn-danger" href="{% url 'kasse' %}">Kasse</a></p>
                 </div>
@@ -24,30 +26,21 @@
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
+                      {% for artikel in artikels %}
                       <tr>
-                        <th scope="row">1</th>
-                        <td><img src="{% static 'img/kopfhoerer.jpg' %}" width="50" height="50" alt=""></td>
-                        <td>Kopfhörer</td>
-                        <td>1</td>
-                        <td>99.-</td>
+                        <th scope="row">{{artikel.id}}</th>
+                        <td><img src="{{artikel.artikel.bild.url}}" width="50" height="50" alt=""></td>
+                        <td>{{artikel.artikel.name}}</td>
+                        <td>{{artikel.menge}}</td>
+                        <td>{{artikel.artikel.preis|floatformat:2}}.-</td>
                       </tr>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td><img src="{% static 'img/kopfhoerer.jpg' %}" width="50" height="50" alt=""></td>
-                        <td>Kopfhörer</td>
-                        <td>1</td>
-                        <td>99.-</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td><img src="{% static 'img/kopfhoerer.jpg' %}" width="50" height="50" alt=""></td>
-                        <td>Kopfhörer</td>
-                        <td>1</td>
-                        <td>99.-</td>
-                      </tr>
+                      {% endfor %}
                     </tbody>
                   </table>
             </div>
         </div>
     </div>
+    {% else %}
+    <h2>Dein Warenkorb ist leer!</h2>
+    {% endif %}
 {% endblock content %}
