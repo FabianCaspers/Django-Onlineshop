@@ -9,7 +9,7 @@ class Kunde(models.Model):
     email = models.CharField(max_length=200, null=True)
     
     def __str__(self):
-        return self.name
+        return str(self.name)
     
 class Artikel(models.Model):
     name = models.CharField(max_length=200, null=True)
@@ -18,7 +18,7 @@ class Artikel(models.Model):
     bild = models.ImageField(null=True, blank=True)
     
     def __str__(self):
-        return self.name
+        return str(self.name)
     
 class Bestellung(models.Model):
     kunde = models.ForeignKey(Kunde, on_delete=models.SET_NULL, null=True, blank=True)
@@ -67,5 +67,5 @@ class Adresse(models.Model):
     datum = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return self.adresse
+        return str(self.adresse)
     
