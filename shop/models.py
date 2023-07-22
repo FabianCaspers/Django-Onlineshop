@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Kunde(models.Model):
     benutzer = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=200, null=True)
-    email = models.CharField(max_length=200, null=True)
+    email = models.EmailField(max_length=200, null=True)
     
     def __str__(self):
         return str(self.name)
@@ -14,7 +14,7 @@ class Kunde(models.Model):
 class Artikel(models.Model):
     name = models.CharField(max_length=200, null=True)
     beschreibung = models.TextField(null=True, blank=True)
-    preis = models.FloatField()
+    preis = models.DecimalField(max_digits=6, decimal_places=2)
     bild = models.ImageField(null=True, blank=True)
     
     def __str__(self):

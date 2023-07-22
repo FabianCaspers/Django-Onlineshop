@@ -1,4 +1,5 @@
 from . models import Bestellung, BestellteArtikel
+import json
 
 def warenkorb_anzahl(request):
     if request.user.is_authenticated:
@@ -12,5 +13,11 @@ def warenkorb_anzahl(request):
         
     else:
         menge = 0
+        try:
+            warenkorb = json.loads(request.COOKIES['warenkorb'])
+        except:
+            warenkorb = {}
+        for i in warenkorb:
+            menge += warenkorb[i]["menge"]
         
     return {'menge': menge}
