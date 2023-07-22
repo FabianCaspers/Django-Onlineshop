@@ -27,11 +27,19 @@
                 <form id="formular" class="row g-3">
                     <div class="col-md-6">
                       <label for="inputName" class="form-label">Name</label>
+                      {% if request.user.is_authenticated %}
                       <input type="text" class="form-control" id="inputName" value="{{request.user|title}}" required>
+                      {% else %}
+                      <input type="text" class="form-control" id="inputName" required>
+                      {% endif %}
                     </div>
                     <div class="col-md-6">
                         <label for="inputEmail4" class="form-label">Email</label>
+                        {% if request.user.is_authenticated %}
                         <input type="email" class="form-control" id="inputEmail" value="{{request.user.email}}" required>
+                        {% else %}
+                        <input type="email" class="form-control" id="inputEmail" required>
+                        {% endif %}
                     </div>
                     <div class="col-12">
                       <label for="inputAddress" class="form-label">Addresse</label>
