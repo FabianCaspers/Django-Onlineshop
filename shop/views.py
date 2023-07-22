@@ -6,6 +6,7 @@ import json
 from django.contrib.auth import authenticate, login, logout
 from . forms import EigeneUserCreationForm
 import uuid
+from django.utils.safestring import mark_safe
 
 # Create your views here.
 def shop(request):
@@ -130,6 +131,16 @@ def bestellen(request):
     else:
         print("nicht eingeloggt")
     
-    
-    messages.success(request, "Vielen Dank für Ihre Bestellung")
+    auftragsUrl = str(auftrags_id)
+    messages.success(request, mark_safe("Vielen Dank für Ihre <a href='/bestellung/"+auftragsUrl+"'>Bestellung: "+auftragsUrl+"</a>"))
     return JsonResponse('Bestellung erfolgreich', safe=False)
+
+def bestellung(request, id):
+    bestellung = Bestellung.objects.filter(auftrags_id=id)
+    if bestellung:
+        bestellung = Bestellung.objects.get(auftrags_id=id)
+        artikels = bestellung.bestellteartikel.all()
+        ctx = {'artikels':artikels, 'bestellung':bestellung}
+        return render(request, 'shop/bestellung.html',ctx)
+    else:
+        return redirect('shop')
