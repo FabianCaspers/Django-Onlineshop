@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.urls import reverse
 from . models import *
 from django.http import JsonResponse, HttpResponse
 import json
@@ -9,6 +10,7 @@ import uuid
 from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
 from .viewtools import gastCookie, gastBestellung
+from paypal.standard.forms import PayPalPaymentsForm
 
 # Create your views here.
 def shop(request):
@@ -122,23 +124,36 @@ def bestellen(request):
     else:
         kunde, bestellung = gastBestellung(request, daten)
         
-        gesamtpreis = float(daten['benutzerDaten']['gesamtpreis'])
-        bestellung.auftrags_id = auftrags_id
-        bestellung.erledigt = True
-        bestellung.save()
-        
-        Adresse.objects.create(
-            kunde=kunde,
-            bestellung=bestellung,
-            adresse=daten['lieferAdresse']['Adresse'],
-            plz=daten['lieferAdresse']['plz'],
-            stadt=daten['lieferAdresse']['stadt'],
-            land=daten['lieferAdresse']['land'],
-        )
+    gesamtpreis = float(daten['benutzerDaten']['gesamtpreis'])
+    bestellung.auftrags_id = auftrags_id
+    bestellung.erledigt = True
+    bestellung.save()
+    
+    Adresse.objects.create(
+        kunde=kunde,
+        bestellung=bestellung,
+        adresse=daten['lieferAdresse']['Adresse'],
+        plz=daten['lieferAdresse']['plz'],
+        stadt=daten['lieferAdresse']['stadt'],
+        land=daten['lieferAdresse']['land'],
+    )
+    
+    paypal_dict = {
+        "business": "sb-6po0w26633617@business.example.com",
+        "amount": "100.00",
+        "item_name": "name of the item",
+        "invoice": "unique-invoice-id",
+        "currency_code": "CHF",
+        "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+        #"return": request.build_absolute_uri(reverse('your-return-view')),
+        #"cancel_return": request.build_absolute_uri(reverse('your-cancel-view')),
+    }
+    
+    paypalform = PayPalPaymentsForm(initial=paypal_dict)
         
     
     auftragsUrl = str(auftrags_id)
-    messages.success(request, mark_safe("Vielen Dank für Ihre <a href='/bestellung/"+auftragsUrl+"'>Bestellung: "+auftragsUrl+"</a>"))
+    messages.success(request, mark_safe("Vielen Dank für Ihre <a href='/bestellung/"+auftragsUrl+"'>Bestellung: "+auftragsUrl+"</a></br> Jetzt bezahlen: "+paypalform.render()))
     # return JsonResponse('Bestellung erfolgreich', safe=False)
     response = HttpResponse('Bestellung erfolgreich')
     response.delete_cookie('warenkorb')
