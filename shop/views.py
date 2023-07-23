@@ -140,13 +140,13 @@ def bestellen(request):
     
     paypal_dict = {
         "business": "sb-6po0w26633617@business.example.com",
-        "amount": "100.00",
-        "item_name": "name of the item",
-        "invoice": "unique-invoice-id",
+        "amount": gesamtpreis,
+        #"item_name": "",
+        "invoice": auftrags_id,
         "currency_code": "CHF",
         "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-        #"return": request.build_absolute_uri(reverse('your-return-view')),
-        #"cancel_return": request.build_absolute_uri(reverse('your-cancel-view')),
+        "return": request.build_absolute_uri(reverse('shop')),
+        "cancel_return": request.build_absolute_uri(reverse('shop')),
     }
     
     paypalform = PayPalPaymentsForm(initial=paypal_dict)
